@@ -1,0 +1,241 @@
+@import '../../Style/Variable.scss';
+@import '../../Style/mixin.scss';
+.Home__slider__show {
+	margin-top: 18px;
+}
+.slider__show {
+	&-move {
+		position: relative;
+
+		> button {
+			position: absolute;
+			top: 40%;
+			outline: none;
+			background-color: $color-white;
+			border-radius: 50%;
+			border: none;
+			width: 32px;
+			height: 32px;
+			color: #4b4b4b;
+			z-index: 1;
+			box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16%);
+			> i {
+				font-size: 1.2rem;
+			}
+			cursor: pointer;
+		}
+		&-box {
+			display: flex;
+			overflow: hidden;
+		}
+		&-btn-left {
+			left: -1.5%;
+		}
+		&-btn-right {
+			right: -1.5%;
+		}
+		&-btn-key {
+			display: flex;
+			margin: 6px 0 0 0;
+			> li {
+				list-style: none;
+				margin-right: 6px;
+				> button {
+					font-size: 0;
+					width: 32px;
+					height: 8px;
+					outline: none;
+					border: none;
+					background-color: $color-gray;
+					border-radius: 10px;
+				}
+				&:first-child {
+					> button {
+						background-color: $color-sliver;
+					}
+				}
+			}
+		}
+	}
+	&-item {
+		display: flex;
+		max-width: 1240px;
+		width: 100%;
+		border-radius: 20px;
+		&:first-child {
+			.slider__show__left-btn:hover {
+				> a {
+					color: #007efe;
+				}
+			}
+		}
+		&:nth-child(2) {
+			.slider__show__left-btn:hover {
+				> a {
+					color: #7612ff;
+				}
+			}
+		}
+		&:last-child {
+			.slider__show__left-btn:hover {
+				> a {
+					color: #fe215e;
+				}
+			}
+		}
+	}
+	&__left {
+		display: flex;
+		width: 640px;
+		max-width: 100%;
+		padding: 0 36px 36px;
+		&-about {
+			color: $color-white;
+		}
+		&-heading {
+			font-size: $fontSize-heading-h2;
+			line-height: 1.5;
+			font-weight: 800;
+			margin-bottom: 8px;
+		}
+		&-desc {
+			font-size: $fontSize-text-normal;
+			font-weight: 600px;
+			line-height: 1.6;
+			margin-bottom: 24px;
+			margin-top: 0;
+		}
+		&-btn {
+			width: 136px;
+
+			> a {
+				text-decoration: none;
+				text-align: center;
+				display: inline-block;
+				min-width: 124px;
+				padding: 4px 10px;
+				color: #fff;
+				border-radius: 16px;
+				border: 2px solid #fff;
+				font-size: 1.4rem;
+				font-weight: 700;
+			}
+			&:hover {
+				> a {
+					background-color: $color-white;
+				}
+			}
+		}
+	}
+	&__right {
+		width: 600px;
+	}
+}
+
+.Home__content {
+	margin-top: 44px;
+	padding: 0 44px 74px;
+	overflow: hidden;
+	&-layout {
+		overflow: hidden;
+		margin-top: 36px;
+		.quantity__student {
+			color: #82919b;
+			font-size: 1.4rem;
+			margin-bottom: 0;
+		}
+	}
+	&-list {
+		&-box {
+			margin-bottom: 44px;
+		}
+		&-text {
+			display: flex;
+			justify-content: space-between;
+			&__heading {
+				color: #000;
+				font-size: $fontSize-heading-h3;
+				font-weight: 700;
+				margin-right: auto;
+				margin-top: 16px;
+			}
+			&__show-more {
+				align-items: center;
+				text-decoration: none;
+				color: $color-orange;
+				user-select: none;
+				cursor: pointer;
+				padding: 8px 0 8px 8px;
+				margin-right: 4px;
+				font-size: 1.5rem;
+				font-weight: 600;
+			}
+		}
+
+		&-layout {
+			display: flex;
+			padding-left: 0;
+		}
+		&-item {
+			width: 320px;
+			list-style: none;
+			margin-right: 24px;
+			flex-shrink: 0;
+			> a {
+			}
+			&-img {
+				@include imgTab();
+			}
+			&__title {
+				> a {
+					@include titleTab();
+				}
+			}
+			&__quantity-student {
+				@include quantity();
+			}
+			&__author {
+				display: flex;
+				&__img {
+					display: flex;
+					align-items: center;
+					> img {
+						@include avatar();
+					}
+				}
+				&__name {
+					display: flex;
+					justify-content: center;
+					align-items: center;
+					text-decoration: none;
+					color: $color-sliver;
+					font-size: $fontSize-text-desc;
+					.postItemDot {
+						margin: 0 8px;
+					}
+					> strong {
+						color: $color-text;
+						font-weight: 600;
+					}
+				}
+			}
+			&__info {
+				display: flex;
+				> p {
+					margin: 0 24px 0 0;
+					font-size: $fontSize-text-desc;
+					color: $color-sliver;
+					> i {
+						margin-right: 6px;
+					}
+				}
+				&-view {
+				}
+				&-liek {
+				}
+				&-comments {
+				}
+			}
+		}
+	}
+}
