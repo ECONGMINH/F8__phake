@@ -58,8 +58,8 @@ function Header(props) {
                     setIsShowInformationn(false);
                 }
             }
-            document.addEventListener("mousedown",handlerNotification);
-            document.addEventListener("mousedown",handlerInformation);
+                document.addEventListener("mousedown",handlerNotification);
+                document.addEventListener("mousedown",handlerInformation);
           return()=>{
                 document.removeEventListener("mousedown",handlerNotification);
                 document.removeEventListener("mousedown",handlerInformation);
