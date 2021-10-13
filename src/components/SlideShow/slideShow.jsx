@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useEffect, useRef } from 'react/cjs/react.development';
-import './style.scss'
+import './Style.scss'
 SlideShow.propTypes = {
     slideShow: PropTypes.any,
 };

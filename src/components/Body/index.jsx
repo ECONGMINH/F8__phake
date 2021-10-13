@@ -566,7 +566,7 @@ function Body(props) {
 
             <div className="content__pages">
                 <Route path={config.routes.home} exact render={()=>  <Home slideShow={HomeSlider} courses={courses} blog={blogs} hotVideo={hotVideo}/> } />
-                <Route path={config.routes.courses}  render={()=>  <Courses  courses={listCourses}/> } />
+                <Route path={config.routes.courses}  render={()=>  <Courses/> } />
                 <Route path={config.routes.question}  render={()=>  <Question  questions={listQuestion}/> } />
                 <Route path={config.routes.blog}  render={()=>  <Blog  blogs={listBlog} /> } />
                 <Route path={config.routes.code}  render={()=>  <Code listCodeShare={ListCode}/> } />
