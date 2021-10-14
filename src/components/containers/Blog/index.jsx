@@ -25,20 +25,13 @@ function Blog(props) {
     const [listPostBlogPage,setListPostBlogPage] = useState(1)
     // const [heightBody,setHeightBody] = useState();
 
-    window.addEventListener('scroll',() => {
-        let heightBody = document.querySelector('body').offsetHeight;
-        let virualHeight = (heightBody / 100) * 75;
-        console.log(virualHeight);
-        let scrolled =window.scrollY;
-        console.log(scrolled);
-        if(scrolled > virualHeight){
-            let newPages = listPostBlogPage + 1
+    window.onscroll = function(ev) {
+        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+            let newPages = listPostBlogPage + 1;
             setListPostBlogPage(newPages);
-
+            console.log(listPostBlogPage)
         }
-        console.log(listPostBlogPage);
-
-    });
+    };
 
     useEffect(() => {
         const fetchListPostBlog = async () => {
@@ -51,6 +44,7 @@ function Blog(props) {
                 console.log('Fetch Api Post Blog fail', error)
             }
         }
+
 
         fetchListPostBlog();
 

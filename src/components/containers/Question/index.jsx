@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import '../../assets/font/fontawesome-free-5.15.3-web/css/all.min.css';
 import './Style.scss';
@@ -13,139 +13,51 @@ Question.defaultProps ={
 
 const icon = <i className="far fa-bookmark"></i>;
 const iconkActive = <i className="fas fa-bookmark" style={{color: "#f05123"}}></i>;
-const PAGE_NOTANSWER ='notanswer';
-const PAGE_DEFAULT = 'question';
-const PAGE_HOT_QUESTION='hotquestion';
+const PAGE_NOTANSWER ='unanswered';
+const PAGE_AllQUESTION = 'all';
+const PAGE_HOT_QUESTION='best';
 
 function Question(props) {
-
-    const {questions} =props;
+    const [iconBookMark,setIconBookMark] = useState(icon);
+    const [iconBookMarkActive,seticonBookMarkActive] = useState(iconkActive);
 
     const [questionList,setQuestionList] = useState([]);
+    const [listQuestionPage,setListQuestionPage] = useState(1);
+    const [typePage,setTypePage] = useState(PAGE_HOT_QUESTION);
+    
+    const  transferPage = (pages) => {
+        setTypePage(pages)
+        setListQuestionPage(1)
+    }
+
+    window.onscroll = function(ev) {
+        if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+            let newPages = listQuestionPage + 1;
+            setListQuestionPage(newPages);
+            console.log(listQuestionPage)
+        }
+    };
 
     useEffect(() => {
         const fetchQuestionList = async () => {
             try{
                 const params = {
-                    page:1,
-                    type:'best'
+                    type:typePage,
+                    page:listQuestionPage,
                 }
                 const response = await questionsApi.getAll(params);
-                setQuestionList(response.data)
+                if(params.page > 1){
+                    setQuestionList(questionList.concat(response.data))
+                }else{
+                    setQuestionList(response.data)
+                }
             }catch(error){
                 console.log('Fail to fetch courses list:',error)
             }
         }
         fetchQuestionList();
-    },[])
-
-    const notAnswerPage = questions.filter((question,id) => {
-        return question.answers < 1;
-    });
-    const hotQuestionPage = questions.filter((question,id) => {
-        return question.answers > 30;
-    });
-
-    const [defaultPage] = useState(questions);
-    const [notAnswer] = useState(notAnswerPage);
-    const [hotQuestion] = useState(hotQuestionPage);
-    const [page,setPage] = useState(PAGE_HOT_QUESTION);
-    
-
-    const [iconBookMark,setIconBookMark] = useState(icon);
-    const [iconBookMarkActive,seticonBookMarkActive] = useState(iconkActive);
-
-
-    const [ListSaveQuestion,setListSaveQuestions] = useState([]);
-    
-    function saveQuestion(id){
-        let checkListSaveQuestion = ListSaveQuestion.some(qs => {
-            return qs.id === id
-        })
-        if(checkListSaveQuestion){
-            let index = ListSaveQuestion.findIndex(qs => qs.id === id)
-            let newListQestionAfterDelete = [...ListSaveQuestion];
-            newListQestionAfterDelete.splice(index,1);
-            setListSaveQuestions(newListQestionAfterDelete);
-            
-        }else{
-            let index = questions.findIndex( item => item.id === id  )
-            let questionItem = questions[index];
-           const listSaveQuestion =[...ListSaveQuestion,questionItem];
-           const newSaveListQuestion = Array.from(new Set(listSaveQuestion));
-           setListSaveQuestions(newSaveListQuestion);
-            console.log(newSaveListQuestion);
-        }
-
-    }
-
-    const changePages = (pages) =>{
-        setPage(pages);
-    }
-
-
-    function render(questions){
-        return   questions.map(question =>(
-
-            <div key={question.id} className="question__primary-item">
-                <div className="question__primary-item-header">
-                    <div className="question__primary-item-header-text">{question.Categories}</div>
-                    <div className="question__primary-item-header-btn">
-                        <div className="question__primary-item-header-btn__save-post"  onClick={(e) =>saveQuestion(question.id)} >
-                        { ListSaveQuestion.some((qs => qs.id === question.id )) ? iconBookMarkActive : iconBookMark }
-                        
-                        </div>
-                        <div className="question__primary-item-header-btn__share-social"><i className="fas fa-ellipsis-h"></i></div>
-                    </div>
-                </div>
-                <h2 className="question__primary-item-heading">
-                    <a href={question.link}>  {question.question}</a>
-                </h2>
-                <div className="question__primary-item-info">
-
-                    <div className="question__primary-item-info-user">
-                        <img src={question.avatar} alt="" />
-                        <span className="question__primary-item-info-user-text">
-                            Đăng bởi
-                            <strong>{question.userName}</strong>
-                            <span className="dot">.</span>
-                            <span>{question.Period} Ngày trước</span>
-                        </span>
-                    </div>
-
-                    <div className="question__primary-item-info-answer">
-                    
-                    <div className="question__primary-item-info-answer-avatar">
-                            {question.avatarUser_answer.map(avatar => (
-                            <img  src={avatar} alt="" />
-                            ))}
-
-                    </div>
-                            <span className="question__primary-item-info-answer-text">
-                              {question.answers > 0 ? question.answers : '' }
-                            </span>
-
-                    </div>
-                </div>
-                <div className="question__primary-item-desc">{question.desc}</div>
-
-                <div className="question__primary-item-footer">
-                    <div className="question__primary-item-footer-tabs">
-                    {question.types.map(type =>(
-                        <div className="question__primary-item-footer-tab">{type}</div>
-                    ))}
-                    </div>
-
-                    <div className="question__primary-item-footer-btn">
-                        <a href={question.link}>
-                            <span>Chi tiết</span>
-                        </a>
-                    </div>
-                </div>
-            </div>
-                ))
-    }
-
+    },[listQuestionPage,typePage])
+  
     function renderQuestion(questions){
         return   questions.map((question,index) =>(
 
@@ -207,7 +119,6 @@ function Question(props) {
             </div>
                 ))
     }
-    
 
     return (
         <div className="grid-pages-stand">
@@ -217,27 +128,20 @@ function Question(props) {
                     <section className="question__primary">
                         <div className="question__primary-header">
                             <div className="question__primary-header-tabs">
-                                <a className={`question__primary-header-tab ${page == PAGE_HOT_QUESTION ? 'question__header-active' : ''}` } onClick={()=> changePages(PAGE_HOT_QUESTION)}>Nỗi Bật</a>
-                                <a className={`question__primary-header-tab ${page == PAGE_NOTANSWER ? 'question__header-active': ''}`} onClick={()=> changePages(PAGE_NOTANSWER)} >Chưa Trả Lời</a>
-                                <a className={`question__primary-header-tab ${page == PAGE_DEFAULT ? 'question__header-active': ''}` } onClick={()=> changePages(PAGE_DEFAULT)}>Tất cả</a>
+                                <a className={`question__primary-header-tab ${typePage === PAGE_HOT_QUESTION ? "question__header-active" : "" }`} onClick={() => transferPage(PAGE_HOT_QUESTION )}>Nỗi Bật</a>
+                                <a className={`question__primary-header-tab ${typePage === PAGE_NOTANSWER ? "question__header-active" : "" }`} onClick={() => transferPage(PAGE_NOTANSWER)}>Chưa Trả Lời</a>
+                                <a className={`question__primary-header-tab ${typePage === PAGE_AllQUESTION ? "question__header-active" : "" }`} onClick={() => transferPage(PAGE_AllQUESTION )}>Tất cả</a>
+                                {/* <a className="question__primary-header-tab" >Chưa Trả Lời</a>
+                                <a className="question__primary-header-tab">Tất cả</a> */}
                             </div>
                         </div>
-                            {/* {page === PAGE_DEFAULT && render(defaultPage) }
-                            {page === PAGE_NOTANSWER && render(notAnswer) }
-                            {page === PAGE_HOT_QUESTION && render(hotQuestion) } */}
-
                             {renderQuestion(questionList)}
                     </section>
 
-                    <section className="question__empty ">
-
-                    </section>
-
+                    <section className="question__empty "></section>
                 </section>
             </section>
-        </div>
-        
+        </div>      
     );
 }
-
 export default Question;
