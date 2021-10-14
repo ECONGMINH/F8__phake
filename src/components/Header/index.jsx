@@ -72,7 +72,7 @@ function Header(props) {
         
         <div className="head__logo-navbar">
             <a href="" className="head__logo-navbar-link"><img src={logo} alt="logo-F8" /></a>
-            <h4 className="head__logo-navbar-title"> Học lập trình để đi làm update </h4>
+            <h4 className="head__logo-navbar-title"> Học lập trình để đi làm  </h4>
         </div>
 
         <div className="head__search">
