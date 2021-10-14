@@ -41,6 +41,7 @@
     ]
   },
   "devDependencies": {
-    "react-custom-scrollbars": "^4.2.1"
+    "react-custom-scrollbars": "^4.2.1",
+    "redux": "^4.1.1"
   }
 }

@@ -1,7 +1,10 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
+import postBlogApi from '../../../api/postBlogApi';
+
 import './Style.scss';
 import '../../assets/font/fontawesome-free-5.15.3-web/css/all.min.css';
+
 Blog.propTypes = {
     blogs: PropTypes.array,
 };
@@ -18,6 +21,40 @@ function Blog(props) {
     const [iconBookMark,setIconBookMark] = useState(icon);
     const [iconBookMarkActive,seticonBookMarkActive] = useState(iconkActive);
     const [ListSaveBlog,setListSaveBlog] = useState([]);
+    const [listPostBlog,setListPostBlog] = useState([]);
+    const [listPostBlogPage,setListPostBlogPage] = useState(1)
+    // const [heightBody,setHeightBody] = useState();
+
+    window.addEventListener('scroll',() => {
+        let heightBody = document.querySelector('body').offsetHeight;
+        let virualHeight = (heightBody / 100) * 75;
+        console.log(virualHeight);
+        let scrolled =window.scrollY;
+        console.log(scrolled);
+        if(scrolled > virualHeight){
+            let newPages = listPostBlogPage + 1
+            setListPostBlogPage(newPages);
+
+        }
+        console.log(listPostBlogPage);
+
+    });
+
+    useEffect(() => {
+        const fetchListPostBlog = async () => {
+            try {
+                const params = { page: listPostBlogPage };
+                const response = await postBlogApi.getPost(params);
+                
+                setListPostBlog(listPostBlog.concat(response.data));     
+            } catch (error) {
+                console.log('Fetch Api Post Blog fail', error)
+            }
+        }
+
+        fetchListPostBlog();
+
+    },[listPostBlogPage])
 
     function saveBlog(e,id){
         let checkListSaveBlog = ListSaveBlog.some(bl => {
@@ -84,6 +121,52 @@ function Blog(props) {
             </div>
                 ))
     }
+    function renderBlogs1(blogs){
+        return blogs.map((blog,index) => (
+
+            <div className="blog__primary-item" key={index}>
+                <div className="blog__primary-item-header">
+                    <div className="blog__primary-item-header__avatar-user">
+                        <img src={blog.user.avatar_cdn === "" ? "https://fullstack.edu.vn/assets/images/nobody_m.256x256.jpg" : blog.user.avatar_cdn } alt="" />
+                        <span>{blog.user.name}</span>
+                    </div>
+
+                    <div className="blog__primary-item-header-btn">
+                        <div className="blog__primary-item-header-btn__save-post">
+                        { iconBookMark }
+                        </div>
+                        <div className="blog__primary-item-header-btn__share-social"><i className="fas fa-ellipsis-h"></i></div>
+                    </div>
+                </div>
+                
+                <div className="blog__primary-item-info">
+                    <div className="blog__primary-item-info-text">
+                        <a href={blog.slug} className="blog__primary-item-info-text__heading">
+                            <h3>{blog.title}</h3>
+                        </a>
+
+                        <p className="blog__primary-item-info-text__desc">
+                            {blog.meta_description}
+                        </p>
+
+                        <div className="blog__primary-item-info-text__Period">
+                            <span className="blog__primary-item-info-text__Period-time" >7 giờ trước</span>
+                            <span className="dot">.</span>
+                            {blog.min_read} giờ xem
+                        </div>
+
+                    </div>
+                    <div className="blog__primary-item-info-img">
+                        <a href={blog.slug} className="blog__primary-item-info-img-avatar">
+                            <img src={blog.thumbnail_cdn} alt="" />
+                        </a>
+                    </div>
+                </div>
+            </div>
+                ))
+    }
+
+    
 
 
     return (
@@ -97,7 +180,8 @@ function Blog(props) {
                                     <a href="" className="blog__primary-header-tab Blog__header-active" >Phù hợp với bạn</a>
                                 </div>
                             </div>
-                            {renderBlogs(blogs)}
+                            {renderBlogs1(listPostBlog)}
+                            {/* {renderBlogs(blogs)} */}
 
                         </section>
 
