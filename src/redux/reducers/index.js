@@ -1,9 +1,13 @@
-const initialState = {
-    articles: []
-  };
+import { combineReducers } from 'redux';
+import todoCourses from './todoCourses';
+import todoQuestion from './todoQuestion';
+import todoBlogs from './todoBlog';
 
-function rootReducer(state = initialState, action ){
-    return state;
-};
+
+const rootReducer = combineReducers({
+  courses: todoCourses,
+  questions:todoQuestion,
+  Blogs:todoBlogs,
+})
 
 export default rootReducer;

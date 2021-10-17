@@ -2,27 +2,21 @@ import React, { useState } from 'react';
 import coursesApi from '../../../api/coursesApi';
 import './Style.scss';
 import { useEffect } from 'react/cjs/react.development';
+import { useDispatch, useSelector } from 'react-redux'
+import {getAllCourses} from '../../../redux/reducers/todoCourses'
 
 
 function Courses(props) {
-    
-    const [coursesList,setCoursesList] =  useState([])
+    const dispatch = useDispatch()
+    const { allCourses} = useSelector((state) => state.courses)
+
     useEffect(() => {
-        const fetchCoursesList = async () => {
-            try{
-                const response =await coursesApi.getAll();
-                setCoursesList(response.data)
-            } catch(error){
-                console.log('Fail to fetch courses list:',error)
-            }
-        }
-        fetchCoursesList();
+        dispatch(getAllCourses)
     },[]);
-    
   
     function renderCourses(courses){
-        return courses.map(course =>(
-            <li key={course.id} className="Study__Page__courses-item">
+        return courses?.map((course,i) =>(
+            <li key={i} className="Study__Page__courses-item">
                 <a href={course.slug}>
                     <div className="Study__Page__courses-item-img" style={{backgroundImage: `url(${course.thumbnail_cdn})`}}></div>
                 </a>
@@ -38,8 +32,8 @@ function Courses(props) {
             </li>
         ))
     }
+
     return (
-     
         <section className="grid__body__full-width ">
 
             <div className="Study__Page">
@@ -49,14 +43,14 @@ function Courses(props) {
 
                 <div className="Study__Page__courses">
                     <ul className="Study__Page__courses-layout">
-                     
-                        {renderCourses(coursesList)}
+                        {renderCourses(allCourses)}
+                  
                     </ul>
                 </div>
             </div>  
+
         </section>
 
     );
 }
-
 export default Courses;
