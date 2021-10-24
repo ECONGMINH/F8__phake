@@ -5,9 +5,5 @@ const postBlogApi = {
         const url = '/blog-posts';
         return axiosClient.get(url,{params});
     },
-
-   
-
 }
-
 export default postBlogApi;

@@ -15,10 +15,8 @@ export const getAllCourses = async (dispatch, getState) => {
     let courses = [];
     try {
         const response = await coursesApi.getAll()
-        if(response){
-            
+        if(response){ 
             courses = response.data;
-
             dispatch({
                 type: GET_COURSES,
                 payload: courses,

@@ -1,10 +1,8 @@
 import React, { useState } from 'react';
-import coursesApi from '../../../api/coursesApi';
-import './Style.scss';
 import { useEffect } from 'react/cjs/react.development';
 import { useDispatch, useSelector } from 'react-redux'
 import {getAllCourses} from '../../../redux/reducers/todoCourses'
-
+import './Style.scss';
 
 function Courses(props) {
     const dispatch = useDispatch()

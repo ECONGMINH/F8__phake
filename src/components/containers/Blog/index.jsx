@@ -1,123 +1,30 @@
 import React, { useEffect, useState } from 'react';
-import PropTypes from 'prop-types';
-import postBlogApi from '../../../api/postBlogApi';
-
+import { useDispatch, useSelector } from 'react-redux'
+import { getMorePostBlogs } from '../../../redux/reducers/todoBlog';
 import './Style.scss';
 import '../../assets/font/fontawesome-free-5.15.3-web/css/all.min.css';
-
-Blog.propTypes = {
-    blogs: PropTypes.array,
-};
-Blog.defaultProps ={
-    blogs : [],
-}
-
 
 const icon = <i className="far fa-bookmark"></i>;
 const iconkActive = <i className="fas fa-bookmark" style={{color: "#f05123"}}></i>;
 
 function Blog(props) {
-    const {blogs} = props;
-    const [iconBookMark,setIconBookMark] = useState(icon);
-    const [iconBookMarkActive,seticonBookMarkActive] = useState(iconkActive);
-    const [ListSaveBlog,setListSaveBlog] = useState([]);
-    const [listPostBlog,setListPostBlog] = useState([]);
-    const [listPostBlogPage,setListPostBlogPage] = useState(1)
-    // const [heightBody,setHeightBody] = useState();
+    const dispatch = useDispatch();
+    const { listPostBlogByPage } = useSelector((state) => state.Blogs);
+
+    const [page,setPage] = useState(1);
 
     window.onscroll = function(ev) {
         if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
-            let newPages = listPostBlogPage + 1;
-            setListPostBlogPage(newPages);
-            console.log(listPostBlogPage)
+            setPage(page+1)    
         }
     };
 
     useEffect(() => {
-        const fetchListPostBlog = async () => {
-            try {
-                const params = { page: listPostBlogPage };
-                const response = await postBlogApi.getPost(params);
-                
-                setListPostBlog(listPostBlog.concat(response.data));     
-            } catch (error) {
-                console.log('Fetch Api Post Blog fail', error)
-            }
-        }
-
-
-        fetchListPostBlog();
-
-    },[listPostBlogPage])
-
-    function saveBlog(e,id){
-        let checkListSaveBlog = ListSaveBlog.some(bl => {
-            return bl.id === id
-        })
-        if(checkListSaveBlog){
-            let index = ListSaveBlog.findIndex(bl => bl.id === id)
-            let newListBlogAfterDelete = [...ListSaveBlog];
-            newListBlogAfterDelete.splice(index,1);
-            setListSaveBlog(newListBlogAfterDelete);
-            
-        }else{
-            let index = blogs.findIndex( item => item.id === id  )
-            let blogItem = blogs[index];
-           const listSaveBlogs =[...ListSaveBlog,blogItem];
-           const newSaveListBlog = Array.from(new Set(listSaveBlogs));
-           setListSaveBlog(newSaveListBlog);
-            console.log(newSaveListBlog);
-        }
-
-    }
+        dispatch(getMorePostBlogs(page));
+    },[page])
 
     function renderBlogs(blogs){
-        return blogs.map( blog => (
-
-            <div className="blog__primary-item" key={blog.id}>
-                <div className="blog__primary-item-header">
-                    <div className="blog__primary-item-header__avatar-user">
-                        <img src={blog.avatar} alt="" />
-                        <span>{blog.userName}</span>
-                    </div>
-
-                    <div className="blog__primary-item-header-btn">
-                        <div className="blog__primary-item-header-btn__save-post" onClick={(e) =>saveBlog(e,blog.id)}>
-                        { ListSaveBlog.some((bl => bl.id === blog.id )) ? iconBookMarkActive : iconBookMark }
-                        </div>
-                        <div className="blog__primary-item-header-btn__share-social"><i className="fas fa-ellipsis-h"></i></div>
-                    </div>
-                </div>
-                
-                <div className="blog__primary-item-info">
-                    <div className="blog__primary-item-info-text">
-                        <a className="blog__primary-item-info-text__heading">
-                            <h3>{blog.post}</h3>
-                        </a>
-
-                        <p className="blog__primary-item-info-text__desc">
-                            {blog.desc}
-                        </p>
-
-                        <div className="blog__primary-item-info-text__Period">
-                            <span className="blog__primary-item-info-text__Period-time" >{blog.period} giờ trước</span>
-                            <span className="dot">.</span>
-                            {blog.SeeTimePost} giờ xem
-                        </div>
-
-                    </div>
-                    <div className="blog__primary-item-info-img">
-                        <a href="" className="blog__primary-item-info-img-avatar">
-                            <img src={blog.postImage} alt="" />
-                        </a>
-                    </div>
-                </div>
-            </div>
-                ))
-    }
-    function renderBlogs1(blogs){
-        return blogs.map((blog,index) => (
-
+        return blogs?.map((blog,index) => (
             <div className="blog__primary-item" key={index}>
                 <div className="blog__primary-item-header">
                     <div className="blog__primary-item-header__avatar-user">
@@ -127,7 +34,7 @@ function Blog(props) {
 
                     <div className="blog__primary-item-header-btn">
                         <div className="blog__primary-item-header-btn__save-post">
-                        { iconBookMark }
+                        { icon }
                         </div>
                         <div className="blog__primary-item-header-btn__share-social"><i className="fas fa-ellipsis-h"></i></div>
                     </div>
@@ -157,14 +64,9 @@ function Blog(props) {
                     </div>
                 </div>
             </div>
-                ))
+        ))
     }
-
-    
-
-
     return (
-        
             <div className="grid-pages-stand">
                 <section className="grid__body__full-width">
                     <section className="blog index-module_row__-AHgh">
@@ -174,14 +76,10 @@ function Blog(props) {
                                     <a href="" className="blog__primary-header-tab Blog__header-active" >Phù hợp với bạn</a>
                                 </div>
                             </div>
-                            {renderBlogs1(listPostBlog)}
-                            {/* {renderBlogs(blogs)} */}
-
+                            {renderBlogs(listPostBlogByPage)}
                         </section>
 
-
                         <section className="blog__propose">
-
                             <div className="blog__propose-box">
                                 <div className="blog__propose-layout">
                                     <div className="blog__propose-heading">
@@ -197,14 +95,11 @@ function Blog(props) {
                                     </ul>
                                 </div>
                             </div>
-
                         </section>
-
 
                     </section>
                 </section>
             </div>   
-        );
+    );
 }
-
 export default Blog;
