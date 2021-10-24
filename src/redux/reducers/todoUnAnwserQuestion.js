@@ -1,24 +1,21 @@
 import { DEFAULT_KEY, generateCacheTTL, checkCacheValid } from 'redux-cache';
 import questionsApi from '../../api/questionsApi';
 
-
-
-const GET_QUESTION_ALL = 'GET_QUESTION_ALL';
-const GET_MORE_PAGE_ALL_QUESTION = 'GET_MORE_PAGE_ALL_QUESTION';
-
+const GET_MORE_PAGE_UNANWSER_QUESTION ='GET_MORE_PAGE_UNANWSER_QUESTION';
+const GET_QUESTION_UNANSWER = 'GET_QUESTION_UNANSWER';
 const PAGE_NOTANSWER ='unanswered';
-const PAGE_AllQUESTION = 'all';
-const PAGE_HOT_QUESTION='best';
 const pages = 1;
 
 const initialState = {
     [DEFAULT_KEY]: null,
-    AllQuestionsHot: null,
-    allQuestionByPage:null,
+    listQuestionsUnAnswer: null,
+    ListQuestionUnAnwserByPage:null,
 }
 
-export const getListQuestionAll = async (dispatch, getState) => {
-    const isCacheValid = checkCacheValid(getState,'AllQuestion');
+
+
+export const getListQuestionUnAnswer = async (dispatch, getState) => {
+    const isCacheValid = checkCacheValid(getState,'questionUnAnwser');
     if(isCacheValid){
         return null;
     }
@@ -26,13 +23,13 @@ export const getListQuestionAll = async (dispatch, getState) => {
     try {
         const params = {
             page:pages,
-            type:PAGE_AllQUESTION,
+            type:PAGE_NOTANSWER,
         }
         const response = await questionsApi.getAll(params);
         if(response){ 
             questions = response.data;
             dispatch({
-                type: GET_QUESTION_ALL,
+                type: GET_QUESTION_UNANSWER,
                 payload: questions,
               })
         }
@@ -41,24 +38,27 @@ export const getListQuestionAll = async (dispatch, getState) => {
     }
 }
 
-export const getMorePageAllQuestion = (data) =>  async (dispatch, getState,page) => {
+export const getMoreUnAnwserQuestionPage = (data) =>  async (dispatch, getState,) => {
     try{
-        const { AllQuestions } = getState();
-        const { allQuestionByPage } = AllQuestions;
+        const { questionUnAnwser } = getState();
+        const { ListQuestionUnAnwserByPage } = questionUnAnwser;
 
         let newList =[];
         const params = {
-            type:PAGE_AllQUESTION,
+            type:PAGE_NOTANSWER,
             page:data,
         }
+
         const response = await questionsApi.getAll(params);
-        if(allQuestionByPage?.length > 0 && data !== 1){
-            newList = allQuestionByPage?.concat(response.data)
+
+        if(ListQuestionUnAnwserByPage?.length > 0 && data !== 1){
+            newList = ListQuestionUnAnwserByPage?.concat(response.data)
         }else{
             newList = response.data
         }
+
         dispatch({
-            type: GET_MORE_PAGE_ALL_QUESTION,
+            type: GET_MORE_PAGE_UNANWSER_QUESTION,
             payload:newList,
         })
 
@@ -68,19 +68,19 @@ export const getMorePageAllQuestion = (data) =>  async (dispatch, getState,page)
 }
 
 
-const questionsReducer = (state = initialState,action) => {
+const UnAnwserQuestionsReducer = (state = initialState,action) => {
     switch(action.type){
-        case GET_QUESTION_ALL :{
+        case GET_QUESTION_UNANSWER :{
             return {
                 ...state,
                 [DEFAULT_KEY]: generateCacheTTL(),
-                AllQuestionsHot: [...action.payload],
+                listQuestionsUnAnswer: [...action.payload],
             };
         }
-        case GET_MORE_PAGE_ALL_QUESTION :{
+        case GET_MORE_PAGE_UNANWSER_QUESTION :{
             return {
                 ...state,
-                allQuestionByPage: action.payload,
+                ListQuestionUnAnwserByPage: action.payload,
             };
         }
         default : 
@@ -89,4 +89,4 @@ const questionsReducer = (state = initialState,action) => {
 }
 
 
-export default questionsReducer;
+export default UnAnwserQuestionsReducer;
