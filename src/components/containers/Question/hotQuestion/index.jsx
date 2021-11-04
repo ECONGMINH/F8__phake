@@ -7,6 +7,7 @@ const icon = <i className="far fa-bookmark"></i>;
 const iconkActive = <i className="fas fa-bookmark" style={{color: "#f05123"}}></i>;
 
 function HotQuestion(props) {
+    
     const dispatch = useDispatch();
     const { hotListQuestionByPage } = useSelector((state) => state.HotQuestions);
 
