@@ -1,62 +1,32 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux'
+import { getCodeByPage } from '../../../redux/reducers/todoCode';
 import './Style.scss'
 import Prism from "prismjs";
 import '../../assets/prism/prism.css'
-Code.propTypes = {
-    listCodeShare: PropTypes.array,
-};
-
-Code.defaultProps = {
-    listCodeShare:[],
-}
-
-
+import HighlightCode from './component/ListHighlightCode';
 
 
 function Code(props) {
-    const {listCodeShare} = props;
+    const dispatch = useDispatch();
+    const { listCodeByPage } = useSelector(state => state.code)
+    const [page,setPage] = useState(1)
 
-  
+    useEffect(() => {
+        dispatch(getCodeByPage(page))
+    },[page])
 
-    function renderCode(listCodeShare){
-      return  listCodeShare.map( code => (
-
-            <div className="code__primary-item" >
-        <a href="" className="code__primary-item-heading">
-            <h3>{code.title}</h3>
-        </a>
-        
-        <div className="code__primary-item-header">
-            <a className="code__primary-item-header__infor-user">
-                <img src={code.avatar} alt="" />
-                <span>{code.userName}</span>
-                <span className="dot">.</span>
-                  {code.period}  ngày trước
-            </a>
-            
-            <div className="code__primary-item-header-btn">
-                <div className="code__primary-item-header-btn__save-post" ><i className="far fa-bookmark"></i></div>
-                <div className="code__primary-item-header-btn__share-social"><i className="fas fa-ellipsis-h"></i></div>
-            </div>
-
-        </div>
-
-      
-            <pre className="code__primary-item__Highlight ">
-                <code className="language-javascript">
-
-{code.code}   
-                </code>
-            </pre>
-        </div>
-        ))
-
-    
-       
-    }
+    useEffect(() => {
+        window.onscroll = function(ev) {
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight) {
+                setPage(page+1)    
+                // console.log(listCodeByPage)
+            }
+        };
+    })
 
     Prism.highlightAll();
+
     return (
         <div className="grid-pages-stand">
             <section className="grid__body__full-width">
@@ -67,7 +37,11 @@ function Code(props) {
                                     <a href="" className="code__primary-header-tab Blog__header-active" >CHIA SẺ MỚI NHẤT</a>
                                 </div>
                             </div> 
-                            {renderCode(listCodeShare)}
+                            {
+                                listCodeByPage?.map((code,i) => (
+                                    <HighlightCode key={i} info={code} />
+                                ))
+                            }
                     </section>
 
                     <section className="code__propose">

@@ -4,6 +4,9 @@ import todoHotQuestion from './todoHotQuestion';
 import todoUnAnwserQuestion from './todoUnAnwserQuestion';
 import todoQuestion from './todoQuestion';
 import todoBlogs from './todoBlog';
+import todoCode from './todoCode';
+import hotVideo from './hotVideo';
+import slideshow from './slideShow';
 
 
 const rootReducer = combineReducers({
@@ -12,6 +15,9 @@ const rootReducer = combineReducers({
   questionUnAnwser:todoUnAnwserQuestion,
   AllQuestions:todoQuestion,
   Blogs:todoBlogs,
+  code:todoCode,
+  hotVideo:hotVideo,
+  slideshow:slideshow,
 })
 
 export default rootReducer;
